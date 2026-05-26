@@ -213,30 +213,47 @@ define Build/Compile
 		modules
 endef
 
-# ---------- 固件安装 ----------
+# ---------- 固件安装（兼容带后缀的固件文件名，如 rtw8852a_fw-1.bin） ----------
+# helper: 选取第一个匹配的固件文件（如果有多个版本，例如 *-1.bin、*-2.bin）
+FW_8851 := $(firstword $(wildcard $(PKG_BUILD_DIR)/firmware/rtw8851b_fw*.bin))
+FW_8852A := $(firstword $(wildcard $(PKG_BUILD_DIR)/firmware/rtw8852a_fw*.bin))
+FW_8852B := $(firstword $(wildcard $(PKG_BUILD_DIR)/firmware/rtw8852b_fw*.bin))
+FW_8852C := $(firstword $(wildcard $(PKG_BUILD_DIR)/firmware/rtw8852c_fw*.bin))
+FW_8922A := $(firstword $(wildcard $(PKG_BUILD_DIR)/firmware/rtw8922a_fw*.bin))
+
 define KernelPackage/rtl8851bu/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtw89
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/firmware/rtw8851b_fw.bin $(1)/lib/firmware/rtw89
+	$(if $(FW_8851), \
+		$(INSTALL_DATA) $(FW_8851) $(1)/lib/firmware/rtw89, \
+		$(warning "rtw8851b firmware not found in $(PKG_BUILD_DIR)/firmware"))
 endef
 
 define KernelPackage/rtl8852au/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtw89
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/firmware/rtw8852a_fw.bin $(1)/lib/firmware/rtw89
+	$(if $(FW_8852A), \
+		$(INSTALL_DATA) $(FW_8852A) $(1)/lib/firmware/rtw89, \
+		$(warning "rtw8852a firmware not found in $(PKG_BUILD_DIR)/firmware"))
 endef
 
 define KernelPackage/rtl8852bu/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtw89
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/firmware/rtw8852b_fw.bin $(1)/lib/firmware/rtw89
+	$(if $(FW_8852B), \
+		$(INSTALL_DATA) $(FW_8852B) $(1)/lib/firmware/rtw89, \
+		$(warning "rtw8852b firmware not found in $(PKG_BUILD_DIR)/firmware"))
 endef
 
 define KernelPackage/rtl8852cu/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtw89
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/firmware/rtw8852c_fw.bin $(1)/lib/firmware/rtw89
+	$(if $(FW_8852C), \
+		$(INSTALL_DATA) $(FW_8852C) $(1)/lib/firmware/rtw89, \
+		$(warning "rtw8852c firmware not found in $(PKG_BUILD_DIR)/firmware"))
 endef
 
 define KernelPackage/rtl8922au/install
 	$(INSTALL_DIR) $(1)/lib/firmware/rtw89
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/firmware/rtw8922a_fw.bin $(1)/lib/firmware/rtw89
+	$(if $(FW_8922A), \
+		$(INSTALL_DATA) $(FW_8922A) $(1)/lib/firmware/rtw89, \
+		$(warning "rtw8922a firmware not found in $(PKG_BUILD_DIR)/firmware"))
 endef
 
 # ---------- 注册所有包 ----------
